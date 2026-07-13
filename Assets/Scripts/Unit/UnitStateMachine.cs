@@ -33,6 +33,4 @@ public class UnitStateMachine<A>
     {
         currentState.Update(obj);
     }
-
-
 }

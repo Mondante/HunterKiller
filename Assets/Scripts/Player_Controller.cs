@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -17,6 +18,8 @@ public class Player_Controller : MonoBehaviour
 
     Camera camera;
 
+    Rigidbody2D rb;
+
     [SerializeField] UnityEngine.Grid grid;
 
     [SerializeField] LayerMask layerMask;
@@ -28,6 +31,15 @@ public class Player_Controller : MonoBehaviour
     public IdleState<Player_Controller> idleState;
 
     public MoveState<Player_Controller> moveState;
+
+    float moveSpeed = 100;  //움직일 수 있는 거리
+
+    Vector3 targetPosition;
+
+    public bool b_setPosition = false;
+
+    bool readyToAct = false;
+
     void Start()
     {
         if (instance == null)
@@ -49,6 +61,8 @@ public class Player_Controller : MonoBehaviour
         moveState = new MoveState<Player_Controller>();
 
         stateMachine.ChangeState(idleState);
+
+        rb = GetComponent<Rigidbody2D>();
     }
 
     public void ChangeState(IState<Player_Controller> state)
@@ -66,32 +80,63 @@ public class Player_Controller : MonoBehaviour
 
     public void MousePosition()
     {
-        Vector2 mousePos = Mouse.current.position.ReadValue();
-
-        Vector3 worldPos = camera.ScreenToWorldPoint(mousePos);
-        worldPos.z = 0;
-        //Debug.Log("world"+ worldPos);
-
-        //Vector3 selectedPosition = GetSelectedMapPosition
-
-        //Vector3Int cell = grid.WorldToCell(worldPos);
-
-
-        //Vector3 selPos = GetSelctedMapPosition(new Vector3(mousePos.x, mousePos.y, 0));
-
-        if (GetSelctedMapPosition(new Vector3(mousePos.x, mousePos.y, 0), out Vector3 selPos))
+        if (b_setPosition)
         {
-           
-            Vector3Int cell = grid.WorldToCell(selPos);
-            Vector3 previewPosition = grid.GetCellCenterWorld(cell);
+            Vector2 mousePos = Mouse.current.position.ReadValue();
 
-            highlight.gameObject.SetActive(true);
-            highlight.transform.position = previewPosition;
-            //Debug.Log(previewPosition);
-        }
-        else
-        {
-            highlight.gameObject.SetActive(false);
+            Vector3 worldPos = camera.ScreenToWorldPoint(mousePos);
+            worldPos.z = 0;
+            //Debug.Log("world"+ worldPos);
+
+            //Vector3 selectedPosition = GetSelectedMapPosition
+
+            //Vector3Int cell = grid.WorldToCell(worldPos);
+
+
+            //Vector3 selPos = GetSelctedMapPosition(new Vector3(mousePos.x, mousePos.y, 0));
+
+            if (GetSelctedMapPosition(new Vector3(mousePos.x, mousePos.y, 0), out Vector3 selPos))
+            {
+
+                Vector3Int cell = grid.WorldToCell(selPos);
+                Vector3 previewPosition = grid.GetCellCenterWorld(cell);
+
+                highlight.gameObject.SetActive(true);
+                highlight.transform.position = previewPosition;
+                //Debug.Log(previewPosition);
+
+                //if (Input.GetMouseButtonDown(0))
+                //{
+                //    targetPosition = previewPosition;
+
+                //    if (DistanceCheck())
+                //    {
+                //        readyToAct = true;
+
+                //    }
+                //}
+
+                if (Mouse.current.leftButton.wasPressedThisFrame)
+                {
+                    Debug.Log("클릭까지 성공");
+                    targetPosition = previewPosition;
+                    float distance = Vector3.Distance(this.transform.position, targetPosition);
+
+                    if (DistanceCheck(distance))
+                    {
+                        readyToAct = true;
+                        b_setPosition = false;
+                        
+                        
+                        
+                        moveSpeed -= distance;
+                    }
+                }
+            }
+            else
+            {
+                highlight.gameObject.SetActive(false);
+            }
         }
     }
 
@@ -119,4 +164,45 @@ public class Player_Controller : MonoBehaviour
         selectedPoint = Vector3.zero;
         return false;
     }
+
+    public void Move()
+    {
+        float distance = Vector3.Distance(this.transform.position, targetPosition);
+        if(readyToAct)
+        {
+            rb.MovePosition(Vector3.MoveTowards(rb.position, targetPosition, 3.0f * Time.fixedDeltaTime));
+            
+            if(distance == 0)
+            {
+                stateMachine.ChangeState(idleState);
+            }
+
+        }
+        else
+        {
+
+        }
+    }
+
+    bool DistanceCheck(float distance)
+    {       
+        //RaycastHit2D hit;
+
+        if (distance <= moveSpeed/*&& Physics.Raycast(this.transform.position, targetPosition, distance, ~LayerMask.GetMask("Land"))*/)
+        {
+            return true;
+        }
+        else 
+        {
+
+            return false;
+        } 
+    }
+
+    public void Attack()
+    {
+
+    }
+
+    
 }
