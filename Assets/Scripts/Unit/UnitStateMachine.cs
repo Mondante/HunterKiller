@@ -1,5 +1,4 @@
 
-using System.Security.Cryptography;
 
 public interface IState<A>
 {
@@ -16,9 +15,16 @@ public class UnitStateMachine<A>
 
     private A obj;
 
+    public UnitStateMachine(A _obj)
+    {
+        this.obj = _obj;
+    }
     public void ChangeState(IState<A> state)
     {
-        currentState.Exit(obj);
+        if (currentState != null)
+        {
+            currentState.Exit(obj);
+        }
         currentState = state;
         currentState.Enter(obj);
     }

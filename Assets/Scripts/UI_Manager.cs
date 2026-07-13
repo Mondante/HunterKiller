@@ -5,13 +5,13 @@ public class UI_Manager : MonoBehaviour
     [SerializeField] Button moveButton;
     [SerializeField] Button attackListButton;
 
-    public MoveState<Player_Controller> moveState;
+    //public MoveState<Player_Controller> moveState;
     void Start()
     {
-        moveState = new MoveState<Player_Controller>();
+        //moveState = new MoveState<Player_Controller>();
         moveButton.onClick.AddListener(() => 
         {
-            Player_Controller.instance.ChangeState(moveState);
+            Player_Controller.instance.ChangeState(Player_Controller.instance.moveState);
         });
             
     }

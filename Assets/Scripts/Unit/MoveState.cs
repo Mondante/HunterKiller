@@ -4,7 +4,7 @@ public class MoveState<A> : IState<A>
 {
     public void Enter(A obj)
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Move Enter");
     }
 
     public void Exit(A obj)

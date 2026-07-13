@@ -42,7 +42,7 @@ public class Player_Controller : MonoBehaviour
 
         camera = Camera.main;
 
-        stateMachine = new UnitStateMachine<Player_Controller>();
+        stateMachine = new UnitStateMachine<Player_Controller>(this);
 
         idleState = new IdleState<Player_Controller>();
 
@@ -59,7 +59,7 @@ public class Player_Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        MousePosition();
+        //MousePosition();
 
         stateMachine.Update();
     }
@@ -87,7 +87,7 @@ public class Player_Controller : MonoBehaviour
 
             highlight.gameObject.SetActive(true);
             highlight.transform.position = previewPosition;
-            Debug.Log(previewPosition);
+            //Debug.Log(previewPosition);
         }
         else
         {
