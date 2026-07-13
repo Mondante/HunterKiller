@@ -9,6 +9,7 @@ public class MoveState<A> : IState<A>
     {
         Debug.Log("Move Enter");
         //StartCoroutine(Player_Controller.instance.MousePosition());
+
         Player_Controller.instance.b_setPosition = true;
     }
 
@@ -19,7 +20,7 @@ public class MoveState<A> : IState<A>
 
     public void Exit(A obj)
     {
-        
+        Debug.Log(Player_Controller.instance.moveSpeed);
     }
 
     public void Update(A obj)

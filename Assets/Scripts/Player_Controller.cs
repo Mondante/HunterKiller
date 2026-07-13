@@ -32,7 +32,7 @@ public class Player_Controller : MonoBehaviour
 
     public MoveState<Player_Controller> moveState;
 
-    float moveSpeed = 100;  //움직일 수 있는 거리
+    public float moveSpeed = 10;  //움직일 수 있는 거리
 
     Vector3 targetPosition;
 
@@ -126,9 +126,9 @@ public class Player_Controller : MonoBehaviour
                     {
                         readyToAct = true;
                         b_setPosition = false;
-                        
-                        
-                        
+
+                        highlight.gameObject.SetActive(false);
+
                         moveSpeed -= distance;
                     }
                 }
@@ -174,6 +174,8 @@ public class Player_Controller : MonoBehaviour
             
             if(distance == 0)
             {
+                targetPosition = Vector3.zero;
+                readyToAct= false;
                 stateMachine.ChangeState(idleState);
             }
 
