@@ -231,11 +231,6 @@ public class Player_Controller : MonoBehaviour
 
     }
 
-    bool CheckState()
-    {
-        return stateMachine.IsIdle(idleState);
-    }
-
     //bool CheckState()
     //{
     //    //return stateMachine.IsIdle(idleState)
