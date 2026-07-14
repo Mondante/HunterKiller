@@ -30,16 +30,33 @@ public class Player_Controller : MonoBehaviour
 
     public IdleState<Player_Controller> idleState;
 
-    public MoveState<Player_Controller> moveState;
+    public MoveState moveState;
+
+    public AttackState<Player_Controller> attackState;
+
+    string currentState;
 
     public float moveSpeed = 10;  //움직일 수 있는 거리
 
-    Vector3 targetPosition;
+    public Vector3 targetPosition;
 
     public bool b_setPosition = false;
 
-    bool readyToAct = false;
+    public bool readyToAct = false;
 
+    int moveAct = 2;
+    public int MoveAct
+    {
+        get { return moveAct; }
+        private set { moveAct = value; }
+    }
+
+    int attackAct = 2;
+    public int AttackAct
+    {
+        get { return  attackAct; }
+        private set { attackAct = value; }
+    }
     void Start()
     {
         if (instance == null)
@@ -58,7 +75,9 @@ public class Player_Controller : MonoBehaviour
 
         idleState = new IdleState<Player_Controller>();
 
-        moveState = new MoveState<Player_Controller>();
+        moveState = new MoveState();
+
+        attackState = new AttackState<Player_Controller>();
 
         stateMachine.ChangeState(idleState);
 
@@ -80,7 +99,7 @@ public class Player_Controller : MonoBehaviour
 
     public void MousePosition()
     {
-        if (b_setPosition)
+        if (b_setPosition )
         {
             Vector2 mousePos = Mouse.current.position.ReadValue();
 
@@ -101,41 +120,37 @@ public class Player_Controller : MonoBehaviour
                 Vector3Int cell = grid.WorldToCell(selPos);
                 Vector3 previewPosition = grid.GetCellCenterWorld(cell);
 
-                highlight.gameObject.SetActive(true);
+                //highlight.gameObject.SetActive(true);
+                TurnOnOffHighlight(true);
                 highlight.transform.position = previewPosition;
                 //Debug.Log(previewPosition);
-
-                //if (Input.GetMouseButtonDown(0))
-                //{
-                //    targetPosition = previewPosition;
-
-                //    if (DistanceCheck())
-                //    {
-                //        readyToAct = true;
-
-                //    }
-                //}
 
                 if (Mouse.current.leftButton.wasPressedThisFrame)
                 {
                     Debug.Log("클릭까지 성공");
-                    targetPosition = previewPosition;
-                    float distance = Vector3.Distance(this.transform.position, targetPosition);
+                    stateMachine.TargetPositionSelected(previewPosition);
+                    //targetPosition = previewPosition;
+                    //float distance = Vector3.Distance(this.transform.position, targetPosition);
 
-                    if (DistanceCheck(distance))
-                    {
-                        readyToAct = true;
-                        b_setPosition = false;
+                    //if (DistanceCheck(distance))
+                    //{
+                    //    readyToAct = true;
+                    //    b_setPosition = false;
 
-                        highlight.gameObject.SetActive(false);
+                    //    highlight.gameObject.SetActive(false);
 
-                        moveSpeed -= distance;
-                    }
+                    //    moveSpeed -= distance;
+                    //    if(moveSpeed < 1 && moveSpeed > 0)
+                    //    {
+                    //        moveSpeed = 0;
+                    //    }
+                    //}
                 }
             }
             else
             {
-                highlight.gameObject.SetActive(false);
+                //highlight.gameObject.SetActive(false);
+                TurnOnOffHighlight(false);
             }
         }
     }
@@ -178,7 +193,6 @@ public class Player_Controller : MonoBehaviour
                 readyToAct= false;
                 stateMachine.ChangeState(idleState);
             }
-
         }
         else
         {
@@ -186,11 +200,15 @@ public class Player_Controller : MonoBehaviour
         }
     }
 
-    bool DistanceCheck(float distance)
+    public void TurnOnOffHighlight(bool set)
+    {
+        highlight.gameObject.SetActive(set);
+    }
+    public bool DistanceCheck(float distance)
     {       
         //RaycastHit2D hit;
 
-        if (distance <= moveSpeed/*&& Physics.Raycast(this.transform.position, targetPosition, distance, ~LayerMask.GetMask("Land"))*/)
+        if (distance <= moveSpeed && distance != 0/*&& Physics.Raycast(this.transform.position, targetPosition, distance, ~LayerMask.GetMask("Land"))*/)
         {
             return true;
         }
@@ -205,6 +223,11 @@ public class Player_Controller : MonoBehaviour
     {
 
     }
+
+    //bool CheckState()
+    //{
+    //    //return stateMachine.IsIdle(idleState)
+    //}
 
     
 }
