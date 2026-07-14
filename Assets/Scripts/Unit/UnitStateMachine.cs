@@ -29,6 +29,13 @@ public class UnitStateMachine<A>
         currentState.Enter(obj);
     }
 
+    public bool IsIdle(IState<A> state)
+    {
+        return currentState == state;
+    }
+
+    
+
     public void Update()
     {
         currentState.Update(obj);

@@ -32,6 +32,10 @@ public class Player_Controller : MonoBehaviour
 
     public MoveState<Player_Controller> moveState;
 
+    public AttackState<Player_Controller> attackState;
+
+    string currentState;
+
     public float moveSpeed = 10;  //움직일 수 있는 거리
 
     Vector3 targetPosition;
@@ -40,6 +44,19 @@ public class Player_Controller : MonoBehaviour
 
     bool readyToAct = false;
 
+    int moveAct = 2;
+    public int MoveAct
+    {
+        get { return moveAct; }
+        private set { moveAct = value; }
+    }
+
+    int attackAct = 2;
+    public int AttackAct
+    {
+        get { return  attackAct; }
+        private set { attackAct = value; }
+    }
     void Start()
     {
         if (instance == null)
@@ -59,6 +76,8 @@ public class Player_Controller : MonoBehaviour
         idleState = new IdleState<Player_Controller>();
 
         moveState = new MoveState<Player_Controller>();
+
+        attackState = new AttackState<Player_Controller>();
 
         stateMachine.ChangeState(idleState);
 
@@ -80,7 +99,7 @@ public class Player_Controller : MonoBehaviour
 
     public void MousePosition()
     {
-        if (b_setPosition)
+        if (b_setPosition )
         {
             Vector2 mousePos = Mouse.current.position.ReadValue();
 
@@ -130,6 +149,10 @@ public class Player_Controller : MonoBehaviour
                         highlight.gameObject.SetActive(false);
 
                         moveSpeed -= distance;
+                        if(moveSpeed < 1 && moveSpeed > 0)
+                        {
+                            moveSpeed = 0;
+                        }
                     }
                 }
             }
@@ -138,6 +161,11 @@ public class Player_Controller : MonoBehaviour
                 highlight.gameObject.SetActive(false);
             }
         }
+    }
+
+    void SwitchWithState()
+    {
+        
     }
 
     bool GetSelctedMapPosition(Vector3 mousePosition, out Vector3 selectedPoint)
@@ -178,7 +206,6 @@ public class Player_Controller : MonoBehaviour
                 readyToAct= false;
                 stateMachine.ChangeState(idleState);
             }
-
         }
         else
         {
@@ -190,7 +217,7 @@ public class Player_Controller : MonoBehaviour
     {       
         //RaycastHit2D hit;
 
-        if (distance <= moveSpeed/*&& Physics.Raycast(this.transform.position, targetPosition, distance, ~LayerMask.GetMask("Land"))*/)
+        if (distance <= moveSpeed && distance != 0/*&& Physics.Raycast(this.transform.position, targetPosition, distance, ~LayerMask.GetMask("Land"))*/)
         {
             return true;
         }
@@ -204,6 +231,11 @@ public class Player_Controller : MonoBehaviour
     public void Attack()
     {
 
+    }
+
+    bool CheckState()
+    {
+        return stateMachine.IsIdle(idleState);
     }
 
     

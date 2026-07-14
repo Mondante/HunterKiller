@@ -11,7 +11,8 @@ public class UI_Manager : MonoBehaviour
         //moveState = new MoveState<Player_Controller>();
         moveButton.onClick.AddListener(() => 
         {
-            Player_Controller.instance.ChangeState(Player_Controller.instance.moveState);
+            if(Player_Controller.instance.stateMachine.Equals(Player_Controller.instance.idleState))
+                Player_Controller.instance.ChangeState(Player_Controller.instance.moveState);
         });
             
     }
