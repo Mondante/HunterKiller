@@ -79,6 +79,8 @@ public class Player_Controller : MonoBehaviour
 
         attackState = new AttackState<Player_Controller>();
 
+        attackState = new AttackState<Player_Controller>();
+
         stateMachine.ChangeState(idleState);
 
         rb = GetComponent<Rigidbody2D>();
@@ -155,6 +157,11 @@ public class Player_Controller : MonoBehaviour
         }
     }
 
+    void SwitchWithState()
+    {
+        
+    }
+
     bool GetSelctedMapPosition(Vector3 mousePosition, out Vector3 selectedPoint)
     {
         //Vector3 selectedPoint = Vector3.zero;
@@ -222,6 +229,11 @@ public class Player_Controller : MonoBehaviour
     public void Attack()
     {
 
+    }
+
+    bool CheckState()
+    {
+        return stateMachine.IsIdle(idleState);
     }
 
     //bool CheckState()
