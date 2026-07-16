@@ -1,35 +1,35 @@
 using UnityEngine;
 
-public class AttackState<A> : IState<A>, TargetSet<A>
+enum AttackMethod
 {
-    public void Enter(A obj)
+    Missile,
+    Torpedo
+}
+public class AttackState : IState<Player_Controller>, TargetSet<Player_Controller>
+{
+    public void Enter(Player_Controller obj)
     {
-        throw new System.NotImplementedException();
+        Debug.Log("AttackState");
     }
 
-    public void Exit(A obj)
+    public void Exit(Player_Controller obj)
     {
-        throw new System.NotImplementedException();
+        obj.ActOnce();
     }
 
-    public void TargetPositionSelected(A obj, Vector3 targetPosition)
+    public void TargetPositionSelected(Player_Controller obj, Vector3 targetPosition)
     {
-        throw new System.NotImplementedException();
+        //throw new System.NotImplementedException();
+
+        SelectAttackMethod();
     }
 
-    public void Update(A obj)
+    public void Update(Player_Controller obj)
     {
-        throw new System.NotImplementedException();
+        obj.MousePosition();
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
+    public void SelectAttackMethod()
     {
         
     }

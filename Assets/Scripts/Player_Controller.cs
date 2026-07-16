@@ -32,9 +32,9 @@ public class Player_Controller : MonoBehaviour
 
     public MoveState moveState;
 
-    public AttackState<Player_Controller> attackState;
+    public AttackState attackState;
 
-    string currentState;
+    public StandbyState standbyState;
 
     public float moveSpeed = 10;  //움직일 수 있는 거리
 
@@ -44,19 +44,13 @@ public class Player_Controller : MonoBehaviour
 
     public bool readyToAct = false;
 
-    int moveAct = 2;
-    public int MoveAct
+    int actCount = 4;
+    public int ActCount
     {
-        get { return moveAct; }
-        private set { moveAct = value; }
+        get { return actCount; }
+        private set { actCount = value; }
     }
 
-    int attackAct = 2;
-    public int AttackAct
-    {
-        get { return  attackAct; }
-        private set { attackAct = value; }
-    }
     void Start()
     {
         if (instance == null)
@@ -77,9 +71,9 @@ public class Player_Controller : MonoBehaviour
 
         moveState = new MoveState();
 
-        attackState = new AttackState<Player_Controller>();
+        attackState = new AttackState();
 
-        attackState = new AttackState<Player_Controller>();
+        //attackState = new AttackState<Player_Controller>();
 
         stateMachine.ChangeState(idleState);
 
@@ -88,7 +82,10 @@ public class Player_Controller : MonoBehaviour
 
     public void ChangeState(IState<Player_Controller> state)
     {
-        stateMachine.ChangeState(state);
+        if (ActCount > 0)
+        {
+            stateMachine.ChangeState(state);
+        }
     }
 
     // Update is called once per frame
@@ -187,10 +184,11 @@ public class Player_Controller : MonoBehaviour
         return false;
     }
 
+
     public void Move()
     {
         float distance = Vector3.Distance(this.transform.position, targetPosition);
-        if(readyToAct)
+        if(readyToAct/* && actCount > 0*/)
         {
             rb.MovePosition(Vector3.MoveTowards(rb.position, targetPosition, 3.0f * Time.fixedDeltaTime));
             
@@ -231,6 +229,11 @@ public class Player_Controller : MonoBehaviour
 
     }
 
+
+    public void ActOnce()
+    {
+        ActCount--;
+    }
     //bool CheckState()
     //{
     //    //return stateMachine.IsIdle(idleState)
