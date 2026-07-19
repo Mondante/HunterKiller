@@ -17,6 +17,11 @@ public abstract class AttackObj_Ctrl : MonoBehaviour
 
     protected virtual void Start()
     {
+        
+    }
+
+    protected virtual void OnEnable()
+    {
         StartCoroutine(WeaponArmed());
     }
     protected abstract IEnumerator WeaponArmed();

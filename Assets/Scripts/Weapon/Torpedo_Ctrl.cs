@@ -23,6 +23,11 @@ public class Torpedo_Ctrl : AttackObj_Ctrl
         base.Start();
     }
 
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+    }
+
     // Update is called once per frame
     void Update()
     {

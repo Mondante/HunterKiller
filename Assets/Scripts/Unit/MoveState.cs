@@ -21,6 +21,7 @@ public class MoveState : IState<Player_Controller>, TargetSet<Player_Controller>
     public void Exit(Player_Controller obj)
     {
         Debug.Log(Player_Controller.instance.moveSpeed);
+        obj.ActOnce();
     }
 
     public void TargetPositionSelected(Player_Controller obj, Vector3 _targetPosition)

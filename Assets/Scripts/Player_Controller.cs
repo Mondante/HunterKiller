@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-enum AttackMode
+public enum AttackMode
 {
     Idle,
     Torpedo,
@@ -45,6 +45,8 @@ public class Player_Controller : MonoBehaviour
     public bool readyToAct = false;
 
     int actCount = 4;
+
+    public AttackMode attackMode;
     public int ActCount
     {
         get { return actCount; }
@@ -79,21 +81,33 @@ public class Player_Controller : MonoBehaviour
 
         rb = GetComponent<Rigidbody2D>();
     }
+    
+    void Update()
+    {
+        //MousePosition();
 
+        stateMachine.Update();
+    }
+
+    /// <summary>
+    /// 스테이트 관련 체크 등
+    /// </summary>
+    /// <param name="state"></param>
     public void ChangeState(IState<Player_Controller> state)
     {
         if (ActCount > 0)
         {
             stateMachine.ChangeState(state);
         }
+        else
+        {
+            //UI로 만들어라잉
+            Debug.Log("행동 횟수 끝");
+        }
     }
-
-    // Update is called once per frame
-    void Update()
+    public void ActOnce()
     {
-        //MousePosition();
-
-        stateMachine.Update();
+        ActCount--;
     }
 
     public void MousePosition()
@@ -153,11 +167,7 @@ public class Player_Controller : MonoBehaviour
             }
         }
     }
-
-    void SwitchWithState()
-    {
-        
-    }
+    
 
     bool GetSelctedMapPosition(Vector3 mousePosition, out Vector3 selectedPoint)
     {
@@ -184,6 +194,14 @@ public class Player_Controller : MonoBehaviour
         return false;
     }
 
+    public void TurnOnOffHighlight(bool set)
+    {
+        highlight.gameObject.SetActive(set);
+    }
+
+    /// <summary>
+    /// 이동
+    /// </summary>
 
     public void Move()
     {
@@ -205,10 +223,7 @@ public class Player_Controller : MonoBehaviour
         }
     }
 
-    public void TurnOnOffHighlight(bool set)
-    {
-        highlight.gameObject.SetActive(set);
-    }
+    
     public bool DistanceCheck(float distance)
     {       
         //RaycastHit2D hit;
@@ -224,20 +239,25 @@ public class Player_Controller : MonoBehaviour
         } 
     }
 
-    public void Attack()
+
+    /// <summary>
+    /// 공격
+    /// </summary>
+
+
+    public void LaunchMissle()
     {
 
     }
 
-
-    public void ActOnce()
+    public void LaunchTorpedo()
     {
-        ActCount--;
-    }
-    //bool CheckState()
-    //{
-    //    //return stateMachine.IsIdle(idleState)
-    //}
 
+    }
+
+    public void LaunchMine()
+    {
+
+    }
     
 }

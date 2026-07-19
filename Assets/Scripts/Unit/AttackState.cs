@@ -3,13 +3,16 @@ using UnityEngine;
 enum AttackMethod
 {
     Missile,
-    Torpedo
+    Torpedo,
+    Mine
 }
 public class AttackState : IState<Player_Controller>, TargetSet<Player_Controller>
 {
+    AttackMode attackMode;
     public void Enter(Player_Controller obj)
     {
         Debug.Log("AttackState");
+        attackMode = obj.attackMode;
     }
 
     public void Exit(Player_Controller obj)
@@ -31,6 +34,16 @@ public class AttackState : IState<Player_Controller>, TargetSet<Player_Controlle
 
     public void SelectAttackMethod()
     {
-        
+        switch(attackMode)
+        {
+            case AttackMode.Missile:
+                break;
+            case AttackMode.Torpedo:
+                break;
+            case AttackMode.Mine:
+                break;
+            default:
+                break;
+        }
     }
 }
