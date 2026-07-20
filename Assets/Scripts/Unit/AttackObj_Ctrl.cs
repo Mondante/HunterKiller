@@ -27,9 +27,9 @@ public abstract class AttackObj_Ctrl : MonoBehaviour
     protected abstract IEnumerator WeaponArmed();
 
 
-    protected virtual void OnCollisionEnter2D(Collision2D collision)
+    
+    protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
-
         StopAllCoroutines();
 
         if (collision.gameObject.CompareTag("Unit") || collision.gameObject.CompareTag("Weapon"))
@@ -41,8 +41,6 @@ public abstract class AttackObj_Ctrl : MonoBehaviour
         {
             this.gameObject.SetActive(false);
         }
-
     }
-
     protected abstract void DamageProtocol(GameObject obj);
 }

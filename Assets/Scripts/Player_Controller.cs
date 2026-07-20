@@ -247,7 +247,7 @@ public class Player_Controller : MonoBehaviour
 
     public void LaunchMissle()
     {
-
+        GameObject missile = ObjectPool_Mgr.instance.GetObject("");
     }
 
     public void LaunchTorpedo()
@@ -260,4 +260,10 @@ public class Player_Controller : MonoBehaviour
 
     }
     
+
+    ///
+    public void TakeDamage()
+    {
+
+    }
 }

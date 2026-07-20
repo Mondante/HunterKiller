@@ -61,12 +61,6 @@ public class Torpedo_Ctrl : AttackObj_Ctrl
             yield return new WaitForFixedUpdate();
         }
     }
-
-    protected override void OnCollisionEnter2D(Collision2D collision)
-    {
-        base.OnCollisionEnter2D(collision);
-    }
-
     protected override IEnumerator WeaponArmed()
     {
         yield return new WaitForSeconds(2.3f);
@@ -74,10 +68,16 @@ public class Torpedo_Ctrl : AttackObj_Ctrl
         isArmed = true;
     }
 
-     
-    
+    protected override void OnTriggerEnter2D(Collider2D collision)
+    {
+        base.OnTriggerEnter2D(collision);
+    }
+
     protected override void DamageProtocol(GameObject obj)
     {
-        throw new System.NotImplementedException();
+        if(obj.GetComponent<Player_Controller>())
+        {
+
+        }
     }
 }
