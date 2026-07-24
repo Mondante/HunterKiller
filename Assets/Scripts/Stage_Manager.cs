@@ -27,8 +27,6 @@ public class Stage_Manager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-
     }
 
     public int AddMyAttack(GameObject _obj)
@@ -56,6 +54,7 @@ public class Stage_Manager : MonoBehaviour
     {
         if (isMyTurn  && enemyList.Count >0)
         {
+            StartCoroutine(UI_Manager.instance.RoleChange("Enemy Turn"));
             Player_Controller.instance.ChangeState(Player_Controller.instance.standbyState);
             Debug.Log("Àû Â÷·Ê");
             isMyTurn = false;
@@ -88,6 +87,7 @@ public class Stage_Manager : MonoBehaviour
     {
         if (!isMyTurn)
         {
+            StartCoroutine(UI_Manager.instance.RoleChange("User Turn"));
             Debug.Log("userTurn");
             isMyTurn = true;
             for (int i = 0; i < myAttack.Count; i++)

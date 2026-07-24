@@ -1,12 +1,31 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using System.Collections;
 public class UI_Manager : MonoBehaviour
 {
     [SerializeField] Button moveButton;
     [SerializeField] Button attackListButton;
     [SerializeField] Button[] attackBtn;
     [SerializeField] Button TurnEnd_Btn;
+    [SerializeField] RawImage turnChange_Img;
+    [SerializeField] TMP_Text turnChange_Txt;
+    [SerializeField] Button exit_Btn;
     //public MoveState<Player_Controller> moveState;
+
+    public static UI_Manager instance;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     void Start()
     {
         //moveState = new MoveState<Player_Controller>();
@@ -46,6 +65,11 @@ public class UI_Manager : MonoBehaviour
                 Stage_Manager.instance.ChangeToEnemyTurn();
             }
         });
+
+        exit_Btn.onClick.AddListener(() =>
+        {
+            Application.Quit();
+        });
     }
 
     // Update is called once per frame
@@ -78,5 +102,14 @@ public class UI_Manager : MonoBehaviour
                 Player_Controller.instance.ChangeState(Player_Controller.instance.attackState);
                 break;
         }
+    }
+
+    public IEnumerator RoleChange(string _text)
+    {
+        turnChange_Img.gameObject.SetActive(true);
+        turnChange_Txt.text = _text;
+        yield return new WaitForSeconds(2.5f);
+        turnChange_Img.gameObject.SetActive(false);
+
     }
 }

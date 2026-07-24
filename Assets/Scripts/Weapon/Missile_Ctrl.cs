@@ -15,6 +15,20 @@ public class Missile_Ctrl : AttackObj_Ctrl, MovableObj
     protected override void DamageProtocol(GameObject obj)
     {
         //폭발 시 구역 내 데미지 구현
+        if (obj.CompareTag("Unit") || obj.CompareTag("Weapon"))
+        {
+            Debug.Log("Damaged");
+            Unit_Controller ctrl = obj.GetComponent<Unit_Controller>();
+            if (ctrl != null)
+            {
+                Debug.Log($"Damage :{damage}");
+                ctrl.TakeDamage(damage);
+            }
+            else
+            {
+                Debug.Log("No ctrl");
+            }
+        }
     }
 
     protected override IEnumerator WeaponArmed()
@@ -65,6 +79,7 @@ public class Missile_Ctrl : AttackObj_Ctrl, MovableObj
         if (this.transform.position == targetPos)
         {
             col.enabled = true;
+
         }
         else
         {
