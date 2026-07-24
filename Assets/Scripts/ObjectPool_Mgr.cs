@@ -46,11 +46,13 @@ public class ObjectPool_Mgr : MonoBehaviour
     {
         if(!pools.ContainsKey(name))
         {
+            Debug.Log("null");
             return null;
         }
 
         if (pools[name].Count > 0)
         {
+            Debug.Log($"name : {name}");
             GameObject go = pools[name].Dequeue();
             go.SetActive(true);
             return go;
@@ -64,6 +66,7 @@ public class ObjectPool_Mgr : MonoBehaviour
 
     public void ReturnObject(string name, GameObject go)
     {
+        Debug.Log("Return");
         if(!pools.ContainsKey(name))
         {
             Destroy(go);

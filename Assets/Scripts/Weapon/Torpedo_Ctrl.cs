@@ -1,21 +1,23 @@
 using System.Collections;
 using UnityEngine;
 
-public class Torpedo_Ctrl : AttackObj_Ctrl
+public class Torpedo_Ctrl : AttackObj_Ctrl, MovableObj
 {
     Rigidbody2D rb;
 
-    float maxMoveDistance;
+    float maxMoveDistance = 5f;
 
-    Vector3 targetPosition;
+    
     Vector3 currentPosition;
 
     Coroutine moveRoutine;
 
+
     //LayerMask layermask = LayerMask.GetMask("Water");
-    public void SetTarget(Vector3 _targetPos)
+
+    private void Awake()
     {
-        targetPosition = _targetPos;
+        rb = GetComponent<Rigidbody2D>();
     }
     protected override void Start()
     {
@@ -44,18 +46,29 @@ public class Torpedo_Ctrl : AttackObj_Ctrl
         currentPosition = this.transform.position;
         moveRoutine = StartCoroutine(MoveToTarget());
     }
-    IEnumerator MoveToTarget()
+    public IEnumerator MoveToTarget()
     {
         while (true)
         {
             float moveDistance = Vector3.Distance(this.transform.position, currentPosition);
+
+            Vector2 dir = (targetPosition - currentPosition).normalized;
+ 
+         
+
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+            //rb.rotation = angle - 90f;
+            transform.rotation = Quaternion.Euler(0, 0, angle-90);
+     
+            //this.transform.rotation = Quaternion.LookRotation(dir);
 
             if (moveDistance >= maxMoveDistance)
             {
                 moveRoutine = null;
                 yield break;
             }
-            
+
             rb.MovePosition(Vector3.MoveTowards(rb.position, targetPosition, 3.0f * Time.fixedDeltaTime));
 
             yield return new WaitForFixedUpdate();
@@ -75,9 +88,27 @@ public class Torpedo_Ctrl : AttackObj_Ctrl
 
     protected override void DamageProtocol(GameObject obj)
     {
-        if(obj.GetComponent<Player_Controller>())
+        if (obj.CompareTag("Unit") || obj.CompareTag("Weapon"))
         {
-
+            Debug.Log("Damaged");
+            Unit_Controller ctrl = obj.GetComponent<Unit_Controller>();
+            if (ctrl != null)
+            {
+                Debug.Log($"Damage :{damage}");
+                ctrl.TakeDamage(damage);
+            }
+            else
+            {
+                Debug.Log("No ctrl");
+            }
         }
+    }
+
+    public override void SetState(Vector3 _pos, int _atckOrder, int _damage)
+    {
+        targetPosition = _pos;
+        atckOrder = _atckOrder;
+        damage = _damage;
+        StartCoroutine(WeaponArmed());
     }
 }

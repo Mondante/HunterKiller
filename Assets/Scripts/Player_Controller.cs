@@ -1,7 +1,5 @@
-using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -75,11 +73,14 @@ public class Player_Controller : MonoBehaviour
 
         attackState = new AttackState();
 
+        standbyState = new StandbyState();
         //attackState = new AttackState<Player_Controller>();
 
         stateMachine.ChangeState(idleState);
 
         rb = GetComponent<Rigidbody2D>();
+
+        ActCountText.instance.UpdateText(actCount);
     }
     
     void Update()
@@ -105,15 +106,22 @@ public class Player_Controller : MonoBehaviour
             Debug.Log("행동 횟수 끝");
         }
     }
+
+    public void ActCharge()
+    {
+        actCount = 4;
+        ActCountText.instance.UpdateText(actCount);
+    }
     public void ActOnce()
     {
         ActCount--;
+        ActCountText.instance.UpdateText(actCount);
     }
 
     public void MousePosition()
     {
-        if (b_setPosition )
-        {
+        //if (b_setPosition )
+        //{
             Vector2 mousePos = Mouse.current.position.ReadValue();
 
             Vector3 worldPos = camera.ScreenToWorldPoint(mousePos);
@@ -165,7 +173,7 @@ public class Player_Controller : MonoBehaviour
                 //highlight.gameObject.SetActive(false);
                 TurnOnOffHighlight(false);
             }
-        }
+        //}
     }
     
 
@@ -203,27 +211,53 @@ public class Player_Controller : MonoBehaviour
     /// 이동
     /// </summary>
 
-    public void Move()
+    //public void Move()
+    //{
+    //    float distance = Vector3.Distance(this.transform.position, targetPosition);
+    //    if(readyToAct/* && actCount > 0*/)
+    //    {
+    //        rb.MovePosition(Vector3.MoveTowards(rb.position, targetPosition, 3.0f * Time.fixedDeltaTime));
+            
+    //        if(distance == 0)
+    //        {
+    //            targetPosition = Vector3.zero;
+    //            readyToAct= false;
+    //            stateMachine.ChangeState(idleState);
+    //        }
+    //    }
+    //    else
+    //    {
+
+    //    }
+    //}
+
+    public void StartMove()
+    {
+        StartCoroutine(Move());
+    }
+    IEnumerator Move()
     {
         float distance = Vector3.Distance(this.transform.position, targetPosition);
-        if(readyToAct/* && actCount > 0*/)
+
+        //회전
+        Vector2 dir = (targetPosition - this.transform.position).normalized;
+
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+        transform.rotation = Quaternion.Euler(0, 0, angle - 90);
+
+
+        //이동
+        while (Vector2.Distance(this.transform.position, targetPosition) > 0)
         {
             rb.MovePosition(Vector3.MoveTowards(rb.position, targetPosition, 3.0f * Time.fixedDeltaTime));
-            
-            if(distance == 0)
-            {
-                targetPosition = Vector3.zero;
-                readyToAct= false;
-                stateMachine.ChangeState(idleState);
-            }
-        }
-        else
-        {
 
+            yield return new WaitForFixedUpdate();
         }
+
+        targetPosition = Vector3.zero;
+        stateMachine.ChangeState(idleState);
     }
-
-    
     public bool DistanceCheck(float distance)
     {       
         //RaycastHit2D hit;
@@ -245,19 +279,35 @@ public class Player_Controller : MonoBehaviour
     /// </summary>
 
 
-    public void LaunchMissle()
+    public void LaunchMissile()
     {
-        GameObject missile = ObjectPool_Mgr.instance.GetObject("");
+        Debug.Log("Missile launch");
+        GameObject missile = ObjectPool_Mgr.instance.GetObject("Missile");
+        missile.transform.position = this.transform.position; //Fire 위치 정하던가 유지하던가
+        missile.GetComponent<Missile_Ctrl>().SetState(targetPosition, 0, 10);
+        Stage_Manager.instance.AddMyAttack(missile);
+        missile.GetComponent<Missile_Ctrl>().SetCourse();
+
     }
 
     public void LaunchTorpedo()
     {
+        Debug.Log("Torpedo Launch");
+        GameObject torpedo = ObjectPool_Mgr.instance.GetObject("Torpedo");
+        torpedo.transform.position = this.transform.position;
+        torpedo.GetComponent<Torpedo_Ctrl>().SetState(targetPosition, 0, 20);
+        Stage_Manager.instance.AddMyAttack(torpedo);
+        torpedo.GetComponent<Torpedo_Ctrl>().SetCourse();
 
     }
 
     public void LaunchMine()
     {
-
+        Debug.Log("Mine Launch");
+        GameObject mine = ObjectPool_Mgr.instance.GetObject("Mine");
+        mine.transform.position = this.transform.position;
+        //mine.GetComponent<Mine_Ctrl>().SetState();
+        
     }
     
 

@@ -43,13 +43,15 @@ public class MoveState : IState<Player_Controller>, TargetSet<Player_Controller>
                 obj.moveSpeed = 0;
             }
             obj.targetPosition = _targetPosition;
+
+            obj.StartMove();
         }
     }
 
     public void Update(Player_Controller obj)
     {
         Player_Controller.instance.MousePosition();
-        Player_Controller.instance.Move();
+        //Player_Controller.instance.Move();
         //마우스 클릭 시 플레이어를 움직인다.
     }
 }

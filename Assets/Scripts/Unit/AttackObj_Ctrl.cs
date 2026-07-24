@@ -3,42 +3,64 @@ using UnityEngine;
 
 interface MovableObj
 {
+    
     IEnumerator MoveToTarget();
 
+    /// <summary>
+    /// È£Ãâ¿ë
+    /// </summary>
     public void SetCourse();
 }
 public abstract class AttackObj_Ctrl : MonoBehaviour
 {
-    protected float damage;
+    protected int damage;
 
     protected bool isArmed;
 
+    protected int atckOrder;
+
+    protected Vector3 targetPosition;
     //LayerMask layermask = LayerMask.GetMask("Water");
 
     protected virtual void Start()
     {
         
     }
-
     protected virtual void OnEnable()
     {
-        StartCoroutine(WeaponArmed());
-    }
-    protected abstract IEnumerator WeaponArmed();
-
-
-    
-    protected virtual void OnTriggerEnter2D(Collider2D collision)
-    {
-        StopAllCoroutines();
-
-        if (collision.gameObject.CompareTag("Unit") || collision.gameObject.CompareTag("Weapon"))
+        if(atckOrder == 0)
         {
-            DamageProtocol(collision.gameObject);
-            this.gameObject.SetActive(false);
+            Stage_Manager.instance.AddMyAttack(this.gameObject);
         }
         else
         {
+            Stage_Manager.instance.AddEnemyAttack(this.gameObject);
+        }
+
+        //StartCoroutine(WeaponArmed());
+    }
+    protected abstract IEnumerator WeaponArmed();
+
+    public abstract void SetState(Vector3 _targetPos, int _atckOrder, int _damage);
+
+
+    protected virtual void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (isArmed)
+        {
+            StopAllCoroutines();
+
+
+            DamageProtocol(collision.gameObject);
+
+            if (atckOrder == 0)
+            {
+                Stage_Manager.instance.RemoveMyAttack(this.gameObject);
+            }
+            else
+            {
+                Stage_Manager.instance.RemoveEnemyAttack(this.gameObject);
+            }
             this.gameObject.SetActive(false);
         }
     }

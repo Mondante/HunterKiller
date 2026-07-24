@@ -27,6 +27,9 @@ public class UnitStateMachine<A>
     
     private A obj;
 
+    public IState<A> CurrentState
+    { get { return currentState; } }
+
     public UnitStateMachine(A _obj)
     {
         this.obj = _obj;

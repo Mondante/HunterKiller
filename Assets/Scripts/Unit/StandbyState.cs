@@ -9,7 +9,7 @@ public class StandbyState : IState<Player_Controller>
 
     public void Exit(Player_Controller obj)
     {
-        throw new System.NotImplementedException();
+        Player_Controller.instance.ActCharge();
     }
 
     public void Update(Player_Controller obj)
